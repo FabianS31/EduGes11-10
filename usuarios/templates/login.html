@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iniciar Sesión</title>
+    
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'usuarios/styles.css' %}">
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-box">
+            <h2>Iniciar Sesión</h2>
+            <form method="post">
+                {% csrf_token %}
+
+                {% if form.non_field_errors %}
+                    <div class="alert alert-danger">
+                        {% for error in form.non_field_errors %}
+                            <p>{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+
+                {% for field in form %}
+                    <div class="input-group">
+                        {{ field.label_tag }} 
+                        <div class="input-with-icon">
+                            {{ field }}
+                            <i class="icon"></i>
+                        </div>
+                        {% if field.errors %}
+                            {% for error in field.errors %}
+                                <p class="error-message">{{ error }}</p>
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+                {% endfor %}
+
+                <button type="submit" class="login-btn">Iniciar Sesión</button>
+            </form>
+
+        </div>
+    </div>
+</body>
+</html>

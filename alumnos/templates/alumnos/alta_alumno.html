@@ -1,0 +1,25 @@
+<form id="formAlta" method="POST">
+  {% csrf_token %}
+  <label>Nombre:</label>
+  <input type="text" name="nombre" required>
+
+  <label>Apellido:</label>
+  <input type="text" name="apellido" required>
+
+  <label>Tutor:</label>
+  <input type="text" name="tutor">
+
+  <label>Dirección:</label>
+  <input type="text" name="direccion">
+
+  <label>Teléfono:</label>
+  <input type="text" name="telefono">
+
+  <label>Nivel/Grado:</label>
+  <input type="text" name="nivel">
+
+  <div class="modal-buttons">
+    <button type="submit" class="btn-enviar">Enviar</button>
+    <button type="button" class="btn-cancelar" id="btnCancelar">Cancelar</button>
+  </div>
+</form>
