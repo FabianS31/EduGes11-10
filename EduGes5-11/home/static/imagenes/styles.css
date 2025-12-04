@@ -1,0 +1,201 @@
+/* --- Estilos generales de la página --- */
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    /* Degradé suave para el fondo */
+    background: linear-gradient(135deg, #072f6b, #0b3d91);
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff; /* Texto blanco por defecto fuera de la caja */
+    overflow: hidden; /* Evita scroll innecesario */
+}
+
+/* Contenedor que centra todo */
+.login-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 400px;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+/* --- Logo EduGes --- */
+.logo {
+    margin-bottom: 30px;
+}
+
+.logo img {
+    width: 130px;
+    height: auto;
+    display: block;
+    margin: 0 auto;
+    filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3)); /* Sombrita */
+}
+
+/* --- Caja Blanca de Login --- */
+.login-box {
+    background-color: #ffffff;
+    border-radius: 12px;
+    padding: 40px;
+    width: 100%;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1); /* Sombra más difusa */
+    text-align: center;
+    color: #333; /* Texto oscuro adentro */
+    box-sizing: border-box;
+    border-top: 5px solid #0b3d91; /* Detalle azul */
+}
+
+.login-box h2 {
+    color: #0b3d91;
+    margin-top: 0;
+    margin-bottom: 35px;
+    font-size: 28px;
+    font-weight: 700;
+}
+
+/* --- Campos del Formulario (Usuario, Contraseña) --- */
+.input-group {
+    margin-bottom: 25px;
+    text-align: left;
+}
+
+.input-group label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 10px;
+    color: #555;
+    font-size: 14px;
+}
+
+/* Contenedor del icono + input */
+.input-with-icon {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+/* Icono (Font Awesome) */
+.input-with-icon .icon {
+    position: absolute;
+    left: 18px; /* Un poco más adentro */
+    top: 50%;
+    transform: translateY(-50%);
+    color: #bbb; /* Gris más claro */
+    font-size: 18px;
+    pointer-events: none;
+    transition: color 0.3s ease;
+}
+
+/* Input (campo de texto) */
+.input-with-icon input {
+    width: 100%;
+    padding: 14px 15px 14px 55px; /* Más padding izquierdo por el icono */
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 16px;
+    box-sizing: border-box;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Estado :focus (cuando hacés clic) */
+.input-with-icon input:focus {
+    border-color: #0b3d91;
+    outline: none;
+    box-shadow: 0 0 0 4px rgba(11, 61, 145, 0.15); /* Efecto "glow" azul */
+}
+
+/* Botón del ojo para la contraseña */
+.password-toggle {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #bbb; /* Mismo color que los iconos */
+    font-size: 20px;
+    padding: 0;
+    transition: color 0.3s ease;
+}
+.password-toggle:hover {
+    color: #555;
+}
+.password-toggle:focus {
+    outline: none;
+}
+
+/* --- Mensajes de Error --- */
+.alert { /* Error general (usuario/pass incorrecto) */
+    background-color: #f8d7da;
+    border: 1px solid #f5c6cb;
+    border-left: 5px solid #dc3545; /* Rojo */
+    padding: 15px;
+    margin-bottom: 25px;
+    color: #721c24;
+    border-radius: 8px;
+    font-size: 14px;
+    text-align: left;
+}
+.alert p {
+    margin: 0;
+}
+
+.error-message { /* Error de un campo específico */
+    color: #dc3545;
+    font-size: 13px;
+    margin-top: 6px;
+    text-align: left;
+}
+
+/* --- Botón "Iniciar Sesión" --- */
+.login-btn {
+    background: linear-gradient(135deg, #0b3d91, #1a5dbf); /* Degradé */
+    color: white;
+    font-weight: bold;
+    border: none;
+    padding: 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 18px;
+    width: 100%;
+    transition: background 0.3s ease, transform 0.1s ease, box-shadow 0.3s ease;
+    margin-top: 15px;
+    box-shadow: 0 4px 15px rgba(11, 61, 145, 0.35); /* Sombra más notoria */
+}
+
+.login-btn:hover {
+    background: linear-gradient(135deg, #1a5dbf, #2b7cdd); /* Más claro */
+    box-shadow: 0 7px 18px rgba(11, 61, 145, 0.45); /* Sombra más grande */
+    transform: translateY(-2px); /* Efecto leve de levantarse */
+}
+
+.login-btn:active {
+    transform: scale(0.97) translateY(1px); /* Efecto hundido */
+    box-shadow: 0 2px 5px rgba(11, 61, 145, 0.2);
+}
+
+/* --- Adaptación para pantallas chicas --- */
+@media (max-width: 450px) {
+    .login-box {
+        width: 100%;
+        padding: 30px 25px;
+        border-top: none; /* Sin línea azul arriba en celu */
+        box-shadow: none; /* Sin sombra en celu */
+        border-radius: 0;
+    }
+    .login-container {
+        padding: 0; /* Sin padding el contenedor principal */
+        max-width: none;
+    }
+    .login-box h2 {
+        font-size: 24px;
+    }
+    .logo img {
+        width: 110px;
+    }
+}

@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="es">
+{% load static %}
+<head>
+<meta charset="UTF-8">
+<title>EDUGES - Modificar Tutor</title>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
+<style>
+/* Estilos base (sin cambios) */
+body { margin:0; font-family:Arial,sans-serif; background:url("{% static 'imagenes/fondo_de_modificacion.png' %}") no-repeat center center fixed; background-size:cover; color:#fff; }
+header { background:#072f6b; color:white; padding:20px 30px; display:flex; align-items:center; }
+.logo-container { display:flex; align-items:center; gap:25px; }
+.logo-container img { height:80px; }
+.logo-text { font-size:40px; font-weight:bold; }
+.container { display:flex; min-height:100vh; }
+.sidebar { width:280px; background:#0b3d91; padding:20px 30px; display:flex; flex-direction:column; justify-content:space-between; box-sizing:border-box; min-height:100vh; }
+.menu { list-style:none; padding:0; margin:0; }
+.menu li { margin:15px 0; }
+.menu a { display:block; text-decoration:none; color:white; font-weight:bold; font-size:20px; padding:10px 15px; border-radius:5px; }
+.menu a:hover { background:#072f6b; }
+.submenu ul { list-style:none; padding-left:20px; margin-top:5px; max-height:0; overflow:hidden; transition:max-height 0.3s ease; }
+.submenu ul.open { max-height:500px; }
+.submenu a { position:relative; cursor:pointer; }
+.submenu > a::after { content:"▼"; position:absolute; right:15px; font-size:12px; transition:transform 0.3s; }
+.submenu ul li a { font-weight:normal; font-size:18px; padding-left:25px; }
+.submenu ul li a:hover { background:#09417e; }
+.user-info { color:white; font-weight:bold; font-size:18px; }
+.user-info span { margin-right:10px; font-size:20px; }
+.user-email { font-size:14px; color:#e0e0e0; margin-left:0; }
+.logout form { margin-top:10px; }
+.logout button { width:100%; padding:10px; background:#c0392b; color:white; border:none; border-radius:5px; cursor:pointer; font-size:16px; }
+.logout button:hover { background:#e74c3c; }
+.content { flex:1; display:flex; justify-content:center; align-items:flex-start; padding:40px 20px; min-height:100vh; }
+.form-container { width:650px; background:#fff; padding:30px; border-radius:20px; box-shadow:0 8px 25px rgba(0,0,0,0.5); color:#072f6b; }
+.form-container h2 { text-align:center; font-size:2rem; margin-top:0; margin-bottom:25px; color:#0b3d91; }
+.form-group { position:relative; margin-bottom:20px; }
+.form-group input, .form-group select { width:100%; padding:12px; border-radius:8px; border:1px solid #ccc; background:#fff; font-size:16px; box-sizing: border-box; }
+.form-group input:focus, .form-group select:focus { outline:none; border-color:#0b3d91; box-shadow:0 0 5px #0b3d91; }
+.form-group label { position:absolute; top: 50%; left: 15px; transform: translateY(-50%); background:#fff; padding:0 5px; color:#777; font-size:16px; transition:0.3s; pointer-events:none; }
+.form-group input:focus + label,
+.form-group input:not(:placeholder-shown) + label,
+.form-group select:focus + label,
+.form-group select:not([value=""]) + label,
+.form-group select:valid + label { top:-10px; left:10px; font-size:12px; color:#0b3d91; }
+.form-group label.static-label { position:static; transform:none; top:auto; left:auto; font-size:12px; color:#0b3d91; padding:0 0 5px 0; pointer-events:auto; background:none; }
+.form-group select[multiple] { display:none; }
+button { width:100%; padding:14px; background:#0b3d91; color:white; border:none; border-radius:10px; font-weight:bold; font-size:18px; cursor:pointer; transition:0.3s; margin-top:10px; }
+button:hover { background:#06427a; }
+
+/* --- ESTILOS DE BOTONES (Limpios) --- */
+.action-row { display: flex; gap: 10px; margin-top: 20px; }
+.action-row button, .action-row a { width: 50%; padding: 14px; border-radius: 10px; font-weight: bold; font-size: 18px; cursor: pointer; transition: 0.3s; margin-top: 0; text-align: center; text-decoration: none; display: block; border: none; color: white; }
+.btn-guardar { background:#2ecc71; }
+.btn-guardar:hover { background:#27ae60; }
+.btn-cancelar { background:#c0392b; }
+.btn-cancelar:hover { background:#e74c3c; }
+
+/* --- INICIO: ESTILOS SELECT2 (de alta_tutores.html) --- */
+.form-group .select2-container--default .select2-selection--multiple {
+    width: 100%;
+    padding: 6px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    background: #fff;
+    font-size: 16px;
+    min-height: 48px;
+    box-sizing: border-box;
+}
+.form-group .select2-container--default .select2-selection--multiple .select2-selection__choice {
+    background-color: #0b3d91;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 5px 10px;
+}
+.form-group .select2-container--default .select2-selection--multiple .select2-selection__choice__remove {
+    color: #f1f1f1;
+}
+.form-group .select2-container .select2-search--inline .select2-search__field {
+    margin-top: 5px;
+}
+.select2-results__option {
+    color: #333;
+    background-color: #fff;
+}
+.select2-results__option--highlighted {
+    background-color: #0b3d91 !important;
+    color: white !important;
+}
+/* Estilos de validación */
+.form-group .select2-container.is-invalid .select2-selection--multiple {
+    border: 2px solid #e74c3c !important;
+    box-shadow: 0 0 5px #e74c3c;
+}
+.form-group label.is-invalid {
+    color: #e74c3c !important;
+}
+/* --- FIN: ESTILOS SELECT2 --- */
+
+.messages { margin-bottom:15px; padding:10px; border-radius:8px; background:#2ecc71; color:white; font-weight:bold; text-align:center; }
+.messages.error { background:#e74c3c; }
+.error-text { color:#e74c3c; font-size:14px; margin-top:5px; font-weight:bold; display:none; }
+#mensaje { display:none; color:#c0392b; text-align:center; margin-top:10px; font-weight:bold; }
+@media (max-width:768px) { .form-container { width:95%; padding:20px; } }
+</style>
+</head>
+<body>
+<header>
+<div class="logo-container">
+<img src="{% static 'imagenes/eduges1.png' %}" alt="EduGes">
+<span class="logo-text">EduGes</span>
+</div>
+</header>
+
+<div class="container">
+<aside class="sidebar">
+<div>
+<ul class="menu">
+<li><a href="{% url 'home' %}">🏛️ Inicio</a></li>
+<li class="submenu">
+<a>Alumnos</a>
+<ul>
+<li><a href="{% url 'alta_alumnos' %}">✅ Alta alumnos</a></li>
+<li><a href="{% url 'modificar_alumnos' %}">⚙️ Modificar alumnos</a></li>
+<li><a href="{% url 'baja_alumnos' %}">❌ Baja alumnos</a></li>
+</ul>
+</li>
+<li class="submenu">
+<a>Tutores</a>
+<ul class="open">
+<li><a href="{% url 'alta_tutores' %}">✅ Alta tutores</a></li>
+<li><a href="{% url 'modificar_tutores' %}">⚙️ Modificar tutores</a></li>
+<li><a href="{% url 'baja_tutores' %}">❌ Baja tutores</a></li>
+</ul>
+</li>
+<li class="submenu">
+<a>Usuarios</a>
+<ul>
+<li><a href="{% url 'alta_usuarios' %}">✅ Alta usuario</a></li>
+<li><a href="{% url 'modificar_usuarios' %}">⚙️ Modificar usuario</a></li>
+<li><a href="{% url 'baja_usuarios' %}">❌ Baja usuario</a></li>
+</ul>
+</li>
+<li class="submenu">
+<a>Pagos</a>
+<ul>
+<li><a href="{% url 'asignar_monto' %}"> Asignar monto</a></li>
+<li><a href="{% url 'pagos_alumnos' %}"> Pagos alumnos</a></li>
+</ul>
+</li>
+<li class="submenu">
+<a>Reportes</a>
+<ul>
+<li><a href="{% url 'tutores_vencida' %}">Tutores de cuota vencida</a></li>
+<li><a href="{% url 'cantidad_vencidas' %}">Cantidad de cuotas vencidas</a></li>
+<li><a href="{% url 'alumnos_dia' %}">Alumnos con cuotas al día</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="user-info">
+{% if request.user.is_authenticated %}
+<div><span>👤</span>{{ request.user.username }}</div>
+<div class="user-email">{{ request.user.email }}</div>
+<div class="logout">
+<form action="{% url 'logout' %}" method="post">
+{% csrf_token %}
+<button type="submit">Cerrar sesión</button>
+</form>
+</div>
+{% endif %}
+</div>
+</aside>
+
+<main class="content">
+<div class="form-container">
+
+{% if messages %}
+  {% for message in messages %}
+    <div class="messages {% if message.tags %}{{ message.tags }}{% endif %}">
+      {{ message }}
+    </div>
+  {% endfor %}
+{% endif %}
+
+<h2>Buscar Tutor para Modificar</h2>
+<form id="buscarForm" method="POST" action="{% url 'modificar_tutores' %}">
+{% csrf_token %}
+<div class="form-group">
+<input type="text" name="nombre_apellido" id="nombre_apellido" placeholder=" " value="{{ request.POST.nombre_apellido|default:'' }}">
+<label for="nombre_apellido">Buscar por Nombre / Apellido</label>
+</div>
+<div class="form-group">
+<input type="text" name="nro_doc_buscar" id="nro_doc_buscar" placeholder=" " value="{{ request.POST.nro_doc_buscar|default:'' }}">
+<label for="nro_doc_buscar">Buscar por Número de Documento</label>
+</div>
+<button type="submit">Buscar</button>
+<p id="mensaje">Por favor, complete al menos un campo para buscar.</p>
+</form>
+
+{% if tutor %}
+<h2 style="margin-top: 30px; border-top: 2px solid #0b3d91; padding-top: 25px;">Modificar Datos del Tutor</h2>
+<form id="modificarForm" method="POST" action="{% url 'modificar_tutores' %}">
+{% csrf_token %}
+<input type="hidden" name="tutor_id" value="{{ tutor.id }}">
+
+<div class="form-group">
+<input type="text" name="apellido" id="apellido" placeholder=" " value="{{ tutor.apellido }}" required pattern="^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$">
+<label for="apellido">Apellidos</label>
+<div class="error-text" id="apellidoError">Solo letras y espacios.</div>
+</div>
+
+<div class="form-group">
+<input type="text" name="nombre" id="nombre" placeholder=" " value="{{ tutor.nombre }}" required pattern="^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$">
+<label for="nombre">Nombres</label>
+<div class="error-text" id="nombreError">Solo letras y espacios.</div>
+</div>
+<div class="form-group">
+<input type="date" name="fecha_nac" id="fecha_nac" placeholder=" " value="{{ tutor.fecha_nac|date:'Y-m-d' }}" required min="1923-01-01" max="{{ year_actual }}-12-31">
+<label for="fecha_nac">Fecha de nacimiento</label>
+<div class="error-text" id="fechaError">Seleccione una fecha válida.</div>
+</div>
+
+<div class="form-group">
+<select name="tipo_doc" id="tipo_doc" required>
+<option value="" disabled {% if not tutor.tipo_doc %}selected{% endif %}>(Seleccionar)</option>
+<option value="DNI" {% if tutor.tipo_doc == "DNI" %}selected{% endif %}>DNI Argentino</option>
+<option value="PAS" {% if tutor.tipo_doc == "PAS" %}selected{% endif %}>Pasaporte</option>
+<option value="LC" {% if tutor.tipo_doc == "LC" %}selected{% endif %}>Libreta Cívica</option>
+</select>
+<label for="tipo_doc">Tipo de documento</label>
+<div class="error-text" id="tipo_docError">Debe seleccionar un tipo.</div>
+</div>
+
+<div class="form-group">
+<input type="text" name="nro_doc" id="nro_doc" placeholder=" " value="{{ tutor.nro_doc }}" required pattern="^[0-9]{6,12}$">
+<label for="nro_doc">Número de documento (6-12 dígitos)</label>
+<div class="error-text" id="dniError">Debe tener entre 6 y 12 números.</div>
+</div>
+
+<div class="form-group">
+<input type="text" name="calle" id="calle" placeholder=" " value="{{ tutor.calle }}" required pattern="^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$">
+<label for="calle">Calle (solo letras)</label>
+<div class="error-text" id="calleError">Solo letras y espacios.</div>
+</div>
+
+<div class="form-group">
+<input type="text" name="numero" id="numero" placeholder=" " value="{{ tutor.numero|default:'' }}" required pattern="^\d+$">
+<label for="numero">Número</label>
+<div class="error-text" id="numeroError">Debe ingresar un número válido.</div>
+</div>
+
+<div class="form-group">
+<input type="text" name="piso" id="piso" placeholder=" " value="{{ tutor.piso|default:'' }}" pattern="^[A-Za-z0-9]*$">
+<label for="piso">Piso (opcional)</label>
+</div>
+
+<div class="form-group">
+<input type="text" name="departamento" id="departamento" placeholder=" " value="{{ tutor.departamento|default:'' }}" pattern="^[A-Za-z0-9]*$">
+<label for="departamento">Departamento (opcional)</label>
+</div>
+
+<div class="form-group">
+<input type="tel" name="telefono" id="telefono" placeholder=" " value="{{ tutor.telefono }}" required pattern="^[0-9]{7,15}$">
+<label for="telefono">Teléfono (7-15 dígitos)</label>
+<div class="error-text" id="telefonoError">Debe tener entre 7 y 15 dígitos.</div>
+</div>
+
+<div class="form-group">
+<input type="email" name="email" id="email" placeholder=" (ejemplo@dominio.com)" value="{{ tutor.email }}" required pattern="^[a-zA-Z0.9._%+-]+@[a-zA-Z0-9.-]+\.(com|org|net|edu|gov|mil|ar)$">
+<label for="email">Email</label>
+<div class="error-text" id="emailError">Formato de email inválido.</div>
+</div>
+
+<div class="form-group">
+    <label for="alumnos_select" class="static-label">
+        Asignar Alumnos (Buscar por Legajo, Nombre o Apellido)*
+    </label>
+    <select name="alumnos" id="alumnos_select" multiple="multiple" style="width:100%;">
+        {% for alumno in alumnos %}
+        <option value="{{ alumno.id }}" {% if alumno.id in tutor_alumnos_ids %}selected{% endif %}>
+            {{ alumno.legajo }} - {{ alumno.apellido }}, {{ alumno.nombre }}
+        </option>
+        {% endfor %}
+    </select>
+    <div class="error-text" id="alumnos_selectError" style="margin-top: 5px;">Debe asignar al menos un alumno.</div>
+</div>
+
+<div class="action-row">
+    <button type="submit" class="btn-guardar">Guardar Cambios</button>
+    <a href="{% url 'modificar_tutores' %}" class="btn-cancelar">Cancelar</a>
+</div>
+</form>
+{% endif %} 
+</div>
+</main>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+
+<script>
+$(document).ready(function() {
+    const selectAlumnos = $('#alumnos_select');
+    const errorMsg = $('#alumnos_selectError');
+    const selectLabel = $('label[for="alumnos_select"].static-label');
+
+    if (selectAlumnos.length) { 
+        selectAlumnos.select2({
+            placeholder: "Escribe un legajo, nombre o apellido...",
+            allowClear: true,
+            width: '100%',
+            matcher: function(params, data) {
+                if ($.trim(params.term) === '') {
+                    return data;
+                }
+                var term = params.term.toLowerCase();
+                var text = data.text.toLowerCase();
+                if (text.indexOf(term) > -1) {
+                    return data;
+                }
+                return null;
+            }
+        });
+
+        selectAlumnos.on('change', function() {
+            const seleccionados = $(this).val();
+            if (seleccionados && seleccionados.length > 0) {
+                errorMsg.fadeOut(150);
+                selectAlumnos.next('.select2-container').removeClass('is-invalid');
+                selectLabel.removeClass('is-invalid');
+            }
+        });
+    }
+});
+</script>
+
+<script>
+// Menú lateral
+document.querySelectorAll(".submenu > a").forEach(menu => {
+menu.addEventListener("click", e => {
+e.preventDefault();
+const sublist = menu.nextElementSibling;
+document.querySelectorAll(".submenu ul").forEach(ul => {
+if (ul !== sublist) ul.classList.remove("open");
+});
+sublist.classList.toggle("open");
+});
+});
+
+// Validación búsqueda
+const buscarForm = document.getElementById("buscarForm");
+if(buscarForm){
+const mensaje = document.getElementById("mensaje");
+buscarForm.addEventListener("submit", function(e) {
+const nombre = document.getElementById("nombre_apellido").value.trim();
+const nro_doc = document.getElementById("nro_doc_buscar").value.trim(); 
+if(nombre === "" && nro_doc === ""){
+e.preventDefault();
+mensaje.style.display = "block";
+}else{
+mensaje.style.display = "none";
+}
+});
+}
+
+// --- INICIO: VALIDACIÓN DE FORMULARIO MODIFICADA ---
+const modificarForm = document.getElementById("modificarForm");
+if(modificarForm){
+    const campos = modificarForm.querySelectorAll('input[required], select[required]');
+    
+    const selectAlumnos = $('#alumnos_select');
+    const errorMsgAlumnos = $('#alumnos_selectError');
+    const selectLabel = $('label[for="alumnos_select"].static-label');
+
+    modificarForm.addEventListener('submit', function(e) {
+        let valido = true;
+
+        // 1. Validación de campos de texto, fecha, etc.
+        campos.forEach(campo => {
+            const errorDiv = document.getElementById(campo.id + 'Error');
+            if(errorDiv) errorDiv.style.display = 'none';
+            if(!campo.checkValidity()){
+                valido = false;
+                if(errorDiv) errorDiv.style.display = 'block';
+            }
+        });
+
+        // 2. Validación específica para el Select2
+        const seleccionados = selectAlumnos.val();
+        if (!seleccionados || seleccionados.length === 0) {
+            valido = false;
+            errorMsgAlumnos.fadeIn(200); 
+            selectAlumnos.next('.select2-container').addClass('is-invalid'); 
+            selectLabel.addClass('is-invalid'); 
+        }
+        
+        // 3. Si algo falla, previene el envío (SIN ALERT)
+        if(!valido){
+            e.preventDefault();
+        }
+    });
+}
+// --- FIN: VALIDACIÓN DE FORMULARIO MODIFICADA ---
+</script>
+
+</body>
+</html>

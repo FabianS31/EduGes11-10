@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iniciar Sesión - EduGes</title>
+
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'imagenes/styles.css' %}">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+</head>
+<body>
+    <div class="login-container">
+
+        <div class="logo">
+            <img src="{% static 'imagenes/eduges1.png' %}" alt="EduGes Logo">
+        </div>
+
+        <div class="login-box">
+            <h2>Iniciar Sesión</h2>
+            <form method="post">
+                {% csrf_token %}
+
+                {% if form.non_field_errors %}
+                    <div class="alert">
+                        {% for error in form.non_field_errors %}
+                            <p>{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+
+                {% for field in form %}
+                    <div class="input-group">
+                        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                        <div class="input-with-icon">
+                            {% if field.name == 'username' %}
+                                <i class="icon fas fa-user"></i>
+                            {% elif field.name == 'password' %}
+                                <i class="icon fas fa-lock"></i>
+                            {% endif %}
+                            
+                            <input 
+                                type="{{ field.field.widget.input_type }}" 
+                                name="{{ field.name }}" 
+                                id="{{ field.id_for_label }}" 
+                                class="has-icon" 
+                                {% if field.field.required %}required{% endif %}>
+
+                            {% if field.name == 'password' %}
+                            <button type="button" class="password-toggle" onclick="togglePasswordVisibility('{{ field.id_for_label }}')">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            {% endif %}
+                        </div>
+                        {% if field.errors %}
+                            {% for error in field.errors %}
+                                <p class="error-message">{{ error }}</p>
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+                {% endfor %}
+
+                <button type="submit" class="login-btn">Iniciar Sesión</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function togglePasswordVisibility(fieldId) {
+            const passwordInput = document.getElementById(fieldId);
+            const toggleButtonIcon = passwordInput.parentElement.querySelector('.password-toggle i'); 
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                toggleButtonIcon.classList.remove('fa-eye');
+                toggleButtonIcon.classList.add('fa-eye-slash');
+            } else {
+                passwordInput.type = 'password';
+                toggleButtonIcon.classList.remove('fa-eye-slash');
+                toggleButtonIcon.classList.add('fa-eye');
+            }
+        }
+    </script>
+</body>
+</html>
